@@ -1,0 +1,557 @@
+name: Duolingo Jurídico CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop, staging]
+  pull_request:
+    branches: [main, develop]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: duolingo-juridico
+
+jobs:
+  # Análise de código e testes
+  test_and_analyze:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    
+    strategy:
+      matrix:
+        python-version: [3.9, 3.10, 3.11]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+          
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r backend/requirements.txt
+        pip install -r backend/requirements-test.txt
+        
+    - name: Set up environment variables
+      run: |
+        echo "DATABASE_URL=postgres://postgres:postgres@localhost:5432/test_db" >> $GITHUB_ENV
+        echo "REDIS_URL=redis://localhost:6379/0" >> $GITHUB_ENV
+        echo "SECRET_KEY=test-secret-key-for-ci" >> $GITHUB_ENV
+        echo "DEBUG=True" >> $GITHUB_ENV
+        
+    - name: Run migrations
+      run: |
+        cd backend
+        python manage.py migrate
+        
+    - name: Run tests with coverage
+      run: |
+        cd backend
+        coverage run --source='.' manage.py test
+        coverage xml
+        
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./backend/coverage.xml
+        flags: backend
+        name: codecov-backend
+        
+    - name: Run Python linting (flake8)
+      run: |
+        cd backend
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        
+    - name: Run Python security check (bandit)
+      run: |
+        cd backend
+        bandit -r . -f json -o bandit-report.json
+        
+    - name: Run dependency vulnerability check
+      run: |
+        cd backend
+        safety check --json --output safety-report.json
+        
+    - name: Upload security reports
+      uses: actions/upload-artifact@v3
+      with:
+        name: security-reports-${{ matrix.python-version }}
+        path: |
+          backend/bandit-report.json
+          backend/safety-report.json
+
+  # Testes do Frontend
+  frontend_tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+        
+    - name: Install dependencies
+      run: |
+        cd frontend
+        npm ci
+        
+    - name: Run TypeScript check
+      run: |
+        cd frontend
+        npm run type-check
+        
+    - name: Run ESLint
+      run: |
+        cd frontend
+        npm run lint
+        
+    - name: Run tests
+      run: |
+        cd frontend
+        npm run test -- --coverage --watchAll=false
+        
+    - name: Upload frontend coverage
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./frontend/coverage/lcov.info
+        flags: frontend
+        name: codecov-frontend
+        
+    - name: Build production bundle
+      run: |
+        cd frontend
+        npm run build
+        
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: frontend-build
+        path: frontend/build/
+
+  # Testes de Integração
+  integration_tests:
+    runs-on: ubuntu-latest
+    needs: [test_and_analyze, frontend_tests]
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: integration_test_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:8.8.0
+        env:
+          discovery.type: single-node
+          xpack.security.enabled: false
+        options: >-
+          --health-cmd "curl -f http://localhost:9200"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r backend/requirements.txt
+        pip install -r backend/requirements-test.txt
+        
+    - name: Run integration tests
+      run: |
+        cd backend
+        python manage.py test tests.integration --verbosity=2
+        
+    - name: Run API tests with Postman/Newman
+      run: |
+        cd backend
+        python manage.py runserver &
+        sleep 10
+        npm install -g newman
+        newman run tests/api/duolingo-juridico.postman_collection.json \
+               -e tests/api/test.postman_environment.json \
+               --reporters cli,json \
+               --reporter-json-export newman-report.json
+               
+    - name: Upload API test results
+      uses: actions/upload-artifact@v3
+      with:
+        name: api-test-results
+        path: backend/newman-report.json
+
+  # Testes de Performance
+  performance_tests:
+    runs-on: ubuntu-latest
+    needs: integration_tests
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name: Build test environment
+      run: |
+        docker-compose -f backend/deployment/docker-compose.test.yml up -d
+        sleep 30
+        
+    - name: Run load tests with Locust
+      run: |
+        pip install locust
+        cd backend/tests/performance
+        locust -f load_test.py --host=http://localhost:8000 \
+               --users=100 --spawn-rate=10 --run-time=5m \
+               --html=load_test_report.html --csv=load_test
+               
+    - name: Upload performance reports
+      uses: actions/upload-artifact@v3
+      with:
+        name: performance-reports
+        path: |
+          backend/tests/performance/load_test_report.html
+          backend/tests/performance/load_test_*.csv
+
+  # Build e Push de Imagens Docker
+  build_and_push:
+    runs-on: ubuntu-latest
+    needs: [test_and_analyze, frontend_tests, integration_tests]
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name: Log in to Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ env.IMAGE_NAME }}
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=sha,prefix={{branch}}-
+          type=raw,value=latest,enable={{is_default_branch}}
+          
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./backend
+        file: ./backend/deployment/Dockerfile.prod
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        
+    - name: Build and push Nginx image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./backend/deployment/nginx
+        push: true
+        tags: ${{ env.REGISTRY }}/${{ github.repository }}/nginx:${{ github.sha }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+  # Deploy para Staging
+  deploy_staging:
+    runs-on: ubuntu-latest
+    needs: build_and_push
+    if: github.ref == 'refs/heads/staging'
+    environment: staging
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+        
+    - name: Deploy to ECS Staging
+      run: |
+        aws ecs update-service \
+          --cluster duolingo-juridico-staging \
+          --service duolingo-juridico-web \
+          --force-new-deployment
+          
+    - name: Wait for deployment to complete
+      run: |
+        aws ecs wait services-stable \
+          --cluster duolingo-juridico-staging \
+          --services duolingo-juridico-web
+          
+    - name: Run smoke tests
+      run: |
+        cd backend/tests/smoke
+        python smoke_tests.py --environment=staging
+        
+    - name: Notify Slack
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        channel: '#deployments'
+        webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+        fields: repo,message,commit,author,action,eventName,ref,workflow
+
+  # Deploy para Produção
+  deploy_production:
+    runs-on: ubuntu-latest
+    needs: [build_and_push, deploy_staging]
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+        
+    - name: Create deployment
+      run: |
+        echo "Creating deployment for commit ${{ github.sha }}"
+        
+    - name: Blue-Green Deployment
+      run: |
+        # Implementar estratégia blue-green
+        current_service=$(aws ecs describe-services \
+          --cluster duolingo-juridico-prod \
+          --services duolingo-juridico-web \
+          --query 'services[0].taskDefinition' --output text)
+        
+        # Criar nova task definition
+        aws ecs register-task-definition \
+          --cli-input-json file://deployment/task-definition.json
+          
+        # Atualizar serviço com nova task definition
+        aws ecs update-service \
+          --cluster duolingo-juridico-prod \
+          --service duolingo-juridico-web \
+          --task-definition duolingo-juridico:${{ github.run_number }}
+          
+    - name: Wait for deployment
+      run: |
+        aws ecs wait services-stable \
+          --cluster duolingo-juridico-prod \
+          --services duolingo-juridico-web
+          
+    - name: Health check
+      run: |
+        curl -f https://app.duolingojuridico.com/health/ || exit 1
+        
+    - name: Run production smoke tests
+      run: |
+        cd backend/tests/smoke
+        python smoke_tests.py --environment=production
+        
+    - name: Update database migrations
+      run: |
+        aws ecs run-task \
+          --cluster duolingo-juridico-prod \
+          --task-definition duolingo-juridico-migrate \
+          --launch-type FARGATE \
+          --network-configuration "awsvpcConfiguration={subnets=[subnet-12345],securityGroups=[sg-12345],assignPublicIp=ENABLED}"
+          
+    - name: Collect static files
+      run: |
+        aws ecs run-task \
+          --cluster duolingo-juridico-prod \
+          --task-definition duolingo-juridico-collectstatic \
+          --launch-type FARGATE \
+          --network-configuration "awsvpcConfiguration={subnets=[subnet-12345],securityGroups=[sg-12345],assignPublicIp=ENABLED}"
+          
+    - name: Create GitHub release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ github.run_number }}
+        release_name: Release v${{ github.run_number }}
+        body: |
+          Deployment to production
+          Commit: ${{ github.sha }}
+          
+    - name: Notify success
+      uses: 8398a7/action-slack@v3
+      with:
+        status: success
+        channel: '#deployments'
+        webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+        fields: repo,message,commit,author,action,eventName,ref,workflow
+        custom_payload: |
+          {
+            "text": "🚀 Duolingo Jurídico deployed to production successfully!",
+            "attachments": [{
+              "color": "good",
+              "fields": [{
+                "title": "Commit",
+                "value": "${{ github.sha }}",
+                "short": true
+              }, {
+                "title": "Version",
+                "value": "v${{ github.run_number }}",
+                "short": true
+              }]
+            }]
+          }
+
+  # Rollback em caso de falha
+  rollback:
+    runs-on: ubuntu-latest
+    if: failure() && github.ref == 'refs/heads/main'
+    needs: deploy_production
+    environment: production
+    
+    steps:
+    - name: Rollback deployment
+      run: |
+        # Obter versão anterior
+        previous_version=$(aws ecs describe-services \
+          --cluster duolingo-juridico-prod \
+          --services duolingo-juridico-web \
+          --query 'services[0].taskDefinition' --output text | \
+          sed 's/.*://' | awk '{print $1-1}')
+        
+        # Reverter para versão anterior
+        aws ecs update-service \
+          --cluster duolingo-juridico-prod \
+          --service duolingo-juridico-web \
+          --task-definition duolingo-juridico:$previous_version
+          
+    - name: Notify rollback
+      uses: 8398a7/action-slack@v3
+      with:
+        status: failure
+        channel: '#deployments'
+        webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+        custom_payload: |
+          {
+            "text": "🚨 Production deployment failed! Rollback initiated.",
+            "attachments": [{
+              "color": "danger",
+              "fields": [{
+                "title": "Commit",
+                "value": "${{ github.sha }}",
+                "short": true
+              }]
+            }]
+          }
+
+  # Security Scanning
+  security_scan:
+    runs-on: ubuntu-latest
+    needs: build_and_push
+    
+    steps:
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: ${{ env.REGISTRY }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+        
+    - name: Upload Trivy scan results
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: 'trivy-results.sarif'
+        
+    - name: Run Snyk security scan
+      uses: snyk/actions/docker@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        image: ${{ env.REGISTRY }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+        args: --severity-threshold=high
+
+  # Cleanup
+  cleanup:
+    runs-on: ubuntu-latest
+    needs: [deploy_production, security_scan]
+    if: always()
+    
+    steps:
+    - name: Clean up old images
+      run: |
+        # Manter apenas as últimas 10 imagens
+        images_to_delete=$(docker images --filter "dangling=true" -q)
+        if [ ! -z "$images_to_delete" ]; then
+          docker rmi $images_to_delete
+        fi
+        
+    - name: Clean up test artifacts
+      run: |
+        # Limpeza de arquivos temporários de teste
+        find . -name "*.pyc" -delete
+        find . -name "__pycache__" -delete 
