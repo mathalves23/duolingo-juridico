@@ -1,0 +1,56 @@
+{
+  "short_name": "Duolingo Jurídico",
+  "name": "Duolingo Jurídico - Concursos Públicos",
+  "description": "Plataforma gamificada de estudos para concursos públicos da área jurídica",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#1E3A8A",
+  "background_color": "#F8FAFC",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "categories": ["education", "productivity"],
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  "related_applications": [],
+  "shortcuts": [
+    {
+      "name": "Estudar",
+      "short_name": "Estudar",
+      "description": "Iniciar sessão de estudos",
+      "url": "/subjects",
+      "icons": [{ "src": "/logo192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Questões", 
+      "short_name": "Questões",
+      "description": "Resolver questões",
+      "url": "/questions",
+      "icons": [{ "src": "/logo192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Ranking",
+      "short_name": "Ranking", 
+      "description": "Ver classificação",
+      "url": "/leaderboard",
+      "icons": [{ "src": "/logo192.png", "sizes": "192x192" }]
+    }
+  ]
+}

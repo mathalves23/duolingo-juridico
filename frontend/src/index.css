@@ -1,0 +1,642 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+  
+  body {
+    @apply font-sans bg-gradient-to-br from-slate-50 via-white to-primary-50/30 text-navy-900 antialiased;
+    background-attachment: fixed;
+  }
+  
+  * {
+    @apply box-border;
+  }
+
+  /* Scrollbar personalizada moderna */
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-slate-100/50;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gradient-to-b from-primary-400 to-primary-600 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply from-primary-500 to-primary-700;
+  }
+}
+
+@layer components {
+  /* Sistema de Botões Modernos 2024/2025 */
+  .btn {
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-2xl font-semibold text-sm transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-opacity-50 transform hover:scale-105 active:scale-95 shadow-soft relative overflow-hidden;
+  }
+  
+  .btn::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 transition-opacity duration-300;
+  }
+  
+  .btn:hover::before {
+    @apply opacity-100;
+  }
+  
+  .btn-primary {
+    @apply bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 hover:from-primary-700 hover:via-primary-800 hover:to-primary-900 text-white focus:ring-primary-300 shadow-colored-primary;
+  }
+  
+  .btn-legal {
+    @apply bg-gradient-to-r from-legal-600 via-legal-700 to-legal-800 hover:from-legal-700 hover:via-legal-800 hover:to-legal-900 text-white focus:ring-legal-300 shadow-colored-legal;
+  }
+  
+  .btn-secondary {
+    @apply bg-gradient-to-r from-navy-600 via-navy-700 to-navy-800 hover:from-navy-700 hover:via-navy-800 hover:to-navy-900 text-white focus:ring-navy-300;
+  }
+  
+  .btn-success {
+    @apply bg-gradient-to-r from-success-600 via-success-700 to-success-800 hover:from-success-700 hover:via-success-800 hover:to-success-900 text-white focus:ring-success-300;
+  }
+  
+  .btn-warning {
+    @apply bg-gradient-to-r from-warning-600 via-warning-700 to-warning-800 hover:from-warning-700 hover:via-warning-800 hover:to-warning-900 text-white focus:ring-warning-300;
+  }
+  
+  .btn-danger {
+    @apply bg-gradient-to-r from-danger-600 via-danger-700 to-danger-800 hover:from-danger-700 hover:via-danger-800 hover:to-danger-900 text-white focus:ring-danger-300;
+  }
+
+  .btn-gold {
+    @apply bg-gradient-to-r from-gold-500 via-gold-600 to-gold-700 hover:from-gold-600 hover:via-gold-700 hover:to-gold-800 text-white focus:ring-gold-300 shadow-colored-gold;
+  }
+
+  .btn-purple {
+    @apply bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:from-purple-600 hover:via-purple-700 hover:to-purple-800 text-white focus:ring-purple-300 shadow-colored-purple;
+  }
+
+  .btn-glass {
+    @apply glass text-navy-800 hover:bg-white/40 focus:ring-primary-300 shadow-glass border-0;
+  }
+
+  .btn-outline {
+    @apply bg-transparent border-2 border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white focus:ring-primary-300 shadow-none;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent text-navy-600 hover:bg-navy-100/50 focus:ring-navy-300 shadow-none;
+  }
+
+  .btn-sm {
+    @apply px-4 py-2 text-xs rounded-xl;
+  }
+
+  .btn-lg {
+    @apply px-8 py-4 text-base rounded-3xl;
+  }
+
+  .btn-xl {
+    @apply px-10 py-5 text-lg rounded-3xl;
+  }
+
+  /* Cards Modernos com Glassmorphism */
+  .card {
+    @apply bg-white/70 backdrop-blur-xl rounded-3xl shadow-glass border border-white/20 p-6 transition-all duration-500 hover:shadow-glass-lg hover:bg-white/80 hover:border-white/30;
+  }
+  
+  .card-hover {
+    @apply hover:shadow-glass-xl hover:border-primary-200/50 hover:-translate-y-2 cursor-pointer;
+  }
+
+  .card-glass {
+    @apply glass rounded-3xl p-6 transition-all duration-500 hover:bg-white/40;
+  }
+
+  .card-premium {
+    @apply bg-gradient-to-br from-gold-50/80 via-gold-100/60 to-gold-200/40 backdrop-blur-xl border-gold-200/50 shadow-colored-gold;
+  }
+
+  .card-legal {
+    @apply bg-gradient-to-br from-legal-50/80 via-legal-100/60 to-legal-200/40 backdrop-blur-xl border-legal-200/50 shadow-colored-legal;
+  }
+
+  .card-dark {
+    @apply glass-dark text-white border-navy-700/50;
+  }
+
+  .card-gradient {
+    @apply bg-gradient-to-br from-primary-50/80 via-purple-50/60 to-cyan-50/40 backdrop-blur-xl border-primary-200/50;
+  }
+
+  /* Inputs Modernos com Glassmorphism */
+  .input {
+    @apply w-full px-4 py-3 border-2 border-slate-200/50 rounded-2xl bg-white/60 backdrop-blur-sm focus:outline-none focus:ring-4 focus:ring-primary-300/50 focus:border-primary-500 transition-all duration-300 placeholder-slate-400;
+  }
+
+  .input-glass {
+    @apply glass border-white/30 focus:bg-white/40 focus:border-primary-400/50;
+  }
+
+  .input-error {
+    @apply border-danger-500/50 focus:ring-danger-300/50 focus:border-danger-500;
+  }
+
+  .input-success {
+    @apply border-success-500/50 focus:ring-success-300/50 focus:border-success-500;
+  }
+
+  /* Labels Modernos */
+  .label {
+    @apply block text-sm font-semibold text-navy-700 mb-2;
+  }
+
+  /* Badges Modernos com Glassmorphism */
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold transition-all duration-200 backdrop-blur-sm;
+  }
+  
+  .badge-primary {
+    @apply bg-primary-100/80 text-primary-800 border border-primary-200/50;
+  }
+  
+  .badge-legal {
+    @apply bg-legal-100/80 text-legal-800 border border-legal-200/50;
+  }
+  
+  .badge-success {
+    @apply bg-success-100/80 text-success-800 border border-success-200/50;
+  }
+  
+  .badge-warning {
+    @apply bg-warning-100/80 text-warning-800 border border-warning-200/50;
+  }
+  
+  .badge-danger {
+    @apply bg-danger-100/80 text-danger-800 border border-danger-200/50;
+  }
+
+  .badge-gold {
+    @apply bg-gold-100/80 text-gold-800 border border-gold-200/50;
+  }
+
+  .badge-purple {
+    @apply bg-purple-100/80 text-purple-800 border border-purple-200/50;
+  }
+
+  .badge-glass {
+    @apply glass text-navy-800 border-white/30;
+  }
+
+  /* Títulos Modernos com Gradientes */
+  .title-primary {
+    @apply text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary-600 via-purple-600 to-primary-800 bg-clip-text text-transparent;
+  }
+
+  .title-legal {
+    @apply text-3xl md:text-4xl font-bold bg-gradient-to-r from-legal-600 via-legal-700 to-legal-800 bg-clip-text text-transparent;
+  }
+
+  .title-secondary {
+    @apply text-2xl md:text-3xl font-semibold text-navy-800;
+  }
+
+  .title-gold {
+    @apply text-2xl md:text-3xl font-bold bg-gradient-to-r from-gold-600 via-gold-700 to-gold-800 bg-clip-text text-transparent;
+  }
+
+  .title-gradient {
+    @apply text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent;
+  }
+
+  /* Containers Modernos */
+  .container-main {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .container-narrow {
+    @apply max-w-4xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Navegação Moderna */
+  .nav-link {
+    @apply flex items-center px-4 py-3 text-navy-600 hover:text-primary-600 hover:bg-primary-50/50 rounded-2xl transition-all duration-300 font-medium backdrop-blur-sm;
+  }
+
+  .nav-link-active {
+    @apply text-primary-600 bg-primary-100/60 border-r-4 border-primary-600 backdrop-blur-sm;
+  }
+
+  .nav-link-glass {
+    @apply glass-primary text-white hover:bg-primary-500/40;
+  }
+
+  /* Modais Modernos */
+  .modal-overlay {
+    @apply fixed inset-0 bg-navy-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4;
+  }
+
+  .modal-content {
+    @apply glass rounded-3xl shadow-glass-xl max-w-md w-full p-6 animate-scale-in border border-white/20;
+  }
+
+  /* Loading States Modernos */
+  .loading-spinner {
+    @apply animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600;
+  }
+
+  .loading-dots {
+    @apply flex space-x-1;
+  }
+
+  .loading-dot {
+    @apply h-2 w-2 bg-primary-600 rounded-full animate-bounce;
+  }
+
+  .loading-shimmer {
+    @apply animate-shimmer bg-shimmer-gradient bg-[length:200px_100%];
+  }
+
+  /* Gradientes de Fundo Modernos */
+  .bg-legal-gradient {
+    @apply bg-gradient-to-br from-navy-900 via-primary-900 to-legal-900;
+  }
+
+  .bg-hero-gradient {
+    @apply bg-gradient-to-r from-primary-600 via-purple-700 to-cyan-700;
+  }
+
+  .bg-hero-modern {
+    @apply bg-gradient-to-br from-primary-600 via-purple-600 to-cyan-600;
+  }
+
+  .bg-card-gradient {
+    @apply bg-gradient-to-br from-white/80 via-primary-50/60 to-purple-50/40;
+  }
+
+  .bg-mesh-gradient {
+    @apply bg-gradient-mesh;
+  }
+
+  /* Efeitos de Hover Modernos */
+  .hover-lift {
+    @apply transition-all duration-500 hover:-translate-y-3 hover:shadow-glass-xl;
+  }
+
+  .hover-glow {
+    @apply transition-all duration-300 hover:shadow-glow;
+  }
+
+  .hover-scale {
+    @apply transition-transform duration-300 hover:scale-105;
+  }
+
+  .hover-float {
+    @apply transition-transform duration-300 hover:animate-float;
+  }
+
+  .hover-gradient {
+    @apply transition-all duration-300 hover:bg-gradient-to-r hover:from-primary-500 hover:to-purple-500;
+  }
+
+  /* Estados de Foco Modernos */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-4 focus:ring-primary-300/50 focus:ring-opacity-50;
+  }
+
+  .focus-glass {
+    @apply focus:outline-none focus:ring-4 focus:ring-white/30 focus:bg-white/40;
+  }
+
+  /* Divisores Modernos */
+  .divider {
+    @apply border-t border-slate-200/50 my-6;
+  }
+
+  .divider-gradient {
+    @apply h-px bg-gradient-to-r from-transparent via-primary-300 to-transparent my-6;
+  }
+
+  .divider-vertical {
+    @apply border-l border-slate-200/50 mx-6;
+  }
+
+  /* Texto Moderno */
+  .text-muted {
+    @apply text-slate-500;
+  }
+
+  .text-emphasis {
+    @apply text-navy-800 font-semibold;
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary-600 to-purple-600 bg-clip-text text-transparent;
+  }
+
+  /* Alertas Modernos */
+  .alert {
+    @apply p-4 rounded-2xl border-l-4 mb-4 backdrop-blur-sm;
+  }
+
+  .alert-info {
+    @apply bg-primary-50/80 border-primary-500 text-primary-800;
+  }
+
+  .alert-success {
+    @apply bg-success-50/80 border-success-500 text-success-800;
+  }
+
+  .alert-warning {
+    @apply bg-warning-50/80 border-warning-500 text-warning-800;
+  }
+
+  .alert-danger {
+    @apply bg-danger-50/80 border-danger-500 text-danger-800;
+  }
+
+  /* Tabelas Modernas */
+  .table {
+    @apply w-full border-collapse bg-white/70 backdrop-blur-xl rounded-2xl overflow-hidden shadow-glass;
+  }
+
+  .table th {
+    @apply bg-slate-50/80 px-6 py-4 text-left text-xs font-semibold text-navy-700 uppercase tracking-wider border-b border-slate-200/50;
+  }
+
+  .table td {
+    @apply px-6 py-4 whitespace-nowrap text-sm text-navy-900 border-b border-slate-100/50;
+  }
+
+  .table tr:hover {
+    @apply bg-slate-50/50;
+  }
+
+  /* Progress Bars Modernos */
+  .progress {
+    @apply w-full bg-slate-200/50 rounded-full h-2 overflow-hidden;
+  }
+
+  .progress-bar {
+    @apply h-full bg-gradient-to-r from-primary-500 to-purple-500 rounded-full transition-all duration-500;
+  }
+
+  .progress-bar-legal {
+    @apply bg-gradient-to-r from-legal-500 to-legal-600;
+  }
+
+  .progress-bar-gold {
+    @apply bg-gradient-to-r from-gold-500 to-gold-600;
+  }
+
+  /* Elementos de Gamificação */
+  .achievement-badge {
+    @apply relative inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 shadow-colored-gold animate-glow-pulse;
+  }
+
+  .streak-flame {
+    @apply text-orange-500 animate-pulse;
+  }
+
+  .xp-counter {
+    @apply font-bold text-lg bg-gradient-to-r from-primary-600 to-purple-600 bg-clip-text text-transparent;
+  }
+
+  .level-badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-colored-purple;
+  }
+
+  /* Elementos Interativos Modernos */
+  .interactive-card {
+    @apply card card-hover transform transition-all duration-500 hover:rotate-1 hover:scale-105;
+  }
+
+  .floating-element {
+    @apply animate-float;
+  }
+
+  .morphing-blob {
+    @apply animate-morph;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent font-bold;
+  }
+
+  /* Elementos de Interface Específicos */
+  .sidebar-glass {
+    @apply glass-dark backdrop-blur-xl border-r border-white/10;
+  }
+
+  .header-glass {
+    @apply glass backdrop-blur-xl border-b border-white/10;
+  }
+
+  .notification-dot {
+    @apply absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-danger-500 to-rose-500 rounded-full animate-ping;
+  }
+
+  .status-online {
+    @apply w-3 h-3 bg-gradient-to-r from-legal-500 to-legal-600 rounded-full animate-pulse;
+  }
+
+  /* Elementos de Feedback Visual */
+  .success-glow {
+    @apply shadow-glow-legal border-legal-300/50;
+  }
+
+  .error-glow {
+    @apply shadow-glow-rose border-rose-300/50;
+  }
+
+  .warning-glow {
+    @apply shadow-glow-gold border-gold-300/50;
+  }
+
+  .info-glow {
+    @apply shadow-glow-cyan border-cyan-300/50;
+  }
+}
+
+/* Animações Personalizadas Avançadas */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.animate-slideInRight {
+  animation: slideInRight 0.4s ease-out;
+}
+
+.animate-slideInLeft {
+  animation: slideInLeft 0.4s ease-out;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.3s ease-out;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+}
+
+/* Responsividade Avançada */
+@media (max-width: 640px) {
+  .btn {
+    @apply px-4 py-2 text-sm;
+  }
+  
+  .card {
+    @apply p-4;
+  }
+  
+  .title-primary {
+    @apply text-2xl;
+  }
+  
+  .title-secondary {
+    @apply text-xl;
+  }
+}
+
+/* Dark Mode Support Moderno */
+@media (prefers-color-scheme: dark) {
+  .dark-mode {
+    @apply bg-navy-900 text-white;
+  }
+  
+  .dark-mode .card {
+    @apply glass-dark border-navy-700/50;
+  }
+  
+  .dark-mode .input {
+    @apply glass-dark border-navy-600/50 text-white;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .no-print {
+    @apply hidden;
+  }
+  
+  .print-only {
+    @apply block;
+  }
+}
+
+/* Acessibilidade Moderna */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus Visible para melhor acessibilidade */
+.focus-visible:focus {
+  @apply outline-none ring-4 ring-primary-300/50 ring-opacity-50;
+}
+
+/* Elementos de Loading Modernos */
+.skeleton {
+  @apply animate-shimmer bg-shimmer-gradient bg-[length:200px_100%] rounded-2xl;
+}
+
+.skeleton-text {
+  @apply skeleton h-4 w-full mb-2;
+}
+
+.skeleton-avatar {
+  @apply skeleton h-12 w-12 rounded-full;
+}
+
+.skeleton-card {
+  @apply skeleton h-32 w-full;
+}
+
+/* Elementos de Transição Suaves */
+.page-transition {
+  @apply transition-all duration-500 ease-in-out;
+}
+
+.fade-enter {
+  @apply opacity-0 transform translate-y-4;
+}
+
+.fade-enter-active {
+  @apply opacity-100 transform translate-y-0 transition-all duration-300;
+}
+
+.fade-exit {
+  @apply opacity-100 transform translate-y-0;
+}
+
+.fade-exit-active {
+  @apply opacity-0 transform translate-y-4 transition-all duration-300;
+}
+
