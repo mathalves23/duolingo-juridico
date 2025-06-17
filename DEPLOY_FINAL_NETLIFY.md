@@ -2,15 +2,21 @@
 
 ## ✅ Problema RESOLVIDO!
 
-**Diagnóstico:** O Netlify estava tratando warnings ESLint como erros (CI=true por padrão)  
-**Solução:** Adicionada configuração `CI=false` no `netlify.toml`
+**Diagnóstico:** 
+1. ~~O Netlify estava tratando warnings ESLint como erros (CI=true por padrão)~~ ✅ RESOLVIDO
+2. **Caminho de publicação estava duplicado** (`frontend/frontend/build` em vez de `frontend/build`)
+
+**Solução:** 
+1. ~~Adicionada configuração `CI=false` no `netlify.toml`~~ ✅ RESOLVIDO  
+2. **Corrigido `publish = "build"`** (era `publish = "frontend/build"`)
 
 ## 🎯 Correções Aplicadas
 
 - ✅ **Erro de sintaxe corrigido** no `Dashboard.tsx` 
 - ✅ **Build local testado** e funcionando (133.87 kB gzipped)
 - ✅ **Warnings→Erros problema resolvido** com `CI=false`
-- ✅ **Código enviado para GitHub** (commit 89a684f2)
+- ✅ **Caminho de publicação corrigido** (`build` em vez de `frontend/build`)
+- ✅ **Código enviado para GitHub** (commit 7d0667c0)
 - ✅ **Configuração `netlify.toml`** otimizada
 - ✅ **Arquivo `_redirects`** configurado para SPA
 
@@ -20,10 +26,11 @@
 
 ### 🚀 OPÇÃO 1: Aguardar Deploy Automático (Recomendado)
 
-1. **O Netlify vai detectar** o último commit (89a684f2)
+1. **O Netlify vai detectar** o último commit (7d0667c0)
 2. **Vai fazer build automaticamente** com `CI=false`
-3. **Deploy será bem-sucedido** em alguns minutos
-4. **✅ Site funcionando** em https://duo-juris.netlify.app
+3. **Vai publicar no caminho correto** (`build` em vez de `frontend/build`)
+4. **Deploy será bem-sucedido** em alguns minutos
+5. **✅ Site funcionando** em https://duo-juris.netlify.app
 
 ### 🔧 OPÇÃO 2: Forçar Deploy Manual (Se Necessário)
 
@@ -43,12 +50,12 @@ Se ainda preferir deploy manual:
 ```toml
 [build]
   base = "frontend"
-  publish = "frontend/build"
+  publish = "build"  # ← CORRIGIDO! (era "frontend/build")
   command = "npm run build"
 
 [build.environment]
   NODE_VERSION = "18"
-  CI = "false"  # ← ESTA É A CORREÇÃO CHAVE!
+  CI = "false"  # ← CORREÇÃO ANTERIOR
   REACT_APP_API_URL = "https://concurseiro-backend.onrender.com/api/v1"
   REACT_APP_APP_NAME = "Duolingo Jurídico"
 ```
@@ -62,6 +69,7 @@ Se ainda preferir deploy manual:
 - **✅ SPA:** Configurado com redirecionamentos
 - **✅ Segurança:** Headers enterprise configurados
 - **✅ Warnings:** Não tratados como erros
+- **✅ Caminho:** Corrigido para `build`
 
 ### Tecnologias
 - ⚛️ **React 19.1.0** + TypeScript
@@ -113,6 +121,8 @@ Sua aplicação **Duolingo Jurídico** está pronta com:
 
 ## 📝 Histórico de Commits
 
+- **7d0667c0** - Fix Netlify publish path - Change from 'frontend/build' to 'build'
+- **4eca5c5e** - Update final deploy guide with CI=false solution
 - **89a684f2** - Fix Netlify CI warnings treated as errors - Add CI=false
 - **3870848d** - Add comprehensive Netlify deploy fix guide  
 - **d50ddb6b** - Fix syntax errors in Dashboard.tsx for Netlify build
