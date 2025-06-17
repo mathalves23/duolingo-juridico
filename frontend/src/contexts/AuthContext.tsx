@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
-import { User, AuthResponse, LoginRequest, RegisterRequest, LoadingState } from '../types';
-import apiService from '../services/api';
+import { User, LoginRequest, RegisterRequest, LoadingState } from '../types';
 
 // Tipos para o contexto de autenticação
 interface AuthState {

@@ -18,7 +18,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-primary-50/30 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-primary-50/30 relative overflow-hidden flex flex-col">
       {/* Background Decorative Elements */}
       <div className="fixed inset-0 pointer-events-none">
         {/* Animated Blobs */}
@@ -34,50 +34,50 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       </div>
 
       {/* Layout Structure */}
-      <div className="relative z-10 flex h-screen">
+      <div className="relative z-10 flex flex-1 h-screen">
         {/* Sidebar */}
         <Sidebar isOpen={sidebarOpen} onClose={handleSidebarClose} />
 
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col lg:ml-0">
+        <div className="flex-1 flex flex-col min-w-0">
           {/* Header */}
           <Header onMenuToggle={handleMenuToggle} />
 
           {/* Main Content */}
-          <main className="flex-1 overflow-y-auto">
-            <div className="container-main py-8 lg:py-12 pt-12 lg:pt-16">
+          <main className="flex-1 overflow-y-auto min-h-0">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
               {/* Content with Glass Effect */}
-              <div className="relative">
+              <div className="relative min-h-full">
                 {children}
               </div>
             </div>
           </main>
-
-          {/* Footer */}
-          <footer className="glass border-t border-white/10 py-4">
-            <div className="container-main">
-              <div className="flex flex-col sm:flex-row items-center justify-between space-y-2 sm:space-y-0">
-                <div className="flex items-center space-x-4">
-                  <p className="text-sm text-navy-600">
-                    © 2024 Duolingo Jurídico. Todos os direitos reservados.
-                  </p>
-                </div>
-                <div className="flex items-center space-x-6">
-                  <a href="#" className="text-sm text-navy-600 hover:text-primary-600 transition-colors duration-200">
-                    Política de Privacidade
-                  </a>
-                  <a href="#" className="text-sm text-navy-600 hover:text-primary-600 transition-colors duration-200">
-                    Termos de Uso
-                  </a>
-                  <a href="#" className="text-sm text-navy-600 hover:text-primary-600 transition-colors duration-200">
-                    Suporte
-                  </a>
-                </div>
-              </div>
-            </div>
-          </footer>
         </div>
       </div>
+
+      {/* Footer Global - Ocupando toda a largura da tela */}
+      <footer className="w-full glass border-t border-white/10 py-6 shrink-0">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
+            <div className="flex items-center space-x-4">
+              <p className="text-sm text-navy-600">
+                © 2024 Duolingo Jurídico. Todos os direitos reservados.
+              </p>
+            </div>
+            <div className="flex items-center space-x-6">
+              <button className="text-sm text-navy-600 hover:text-primary-600 transition-colors duration-200">
+                Política de Privacidade
+              </button>
+              <button className="text-sm text-navy-600 hover:text-primary-600 transition-colors duration-200">
+                Termos de Uso
+              </button>
+              <button className="text-sm text-navy-600 hover:text-primary-600 transition-colors duration-200">
+                Suporte
+              </button>
+            </div>
+          </div>
+        </div>
+      </footer>
 
       {/* Floating Action Button (Mobile) */}
       <div className="fixed bottom-6 right-6 lg:hidden z-50">
@@ -88,13 +88,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </button>
       </div>
 
-      {/* Loading Overlay (if needed) */}
-      {/* <div className="fixed inset-0 bg-navy-900/50 backdrop-blur-sm z-50 flex items-center justify-center">
-        <div className="glass rounded-3xl p-8 text-center">
-          <div className="loading-spinner w-12 h-12 mx-auto mb-4"></div>
-          <p className="text-navy-800 font-medium">Carregando...</p>
-        </div>
-      </div> */}
+      {/* Overlay for mobile sidebar */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-navy-900/50 backdrop-blur-sm z-30 lg:hidden"
+          onClick={handleSidebarClose}
+        />
+      )}
     </div>
   );
 };

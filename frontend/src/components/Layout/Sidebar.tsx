@@ -193,7 +193,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             w-full flex items-center space-x-3 px-4 py-3 rounded-2xl transition-all duration-300 group relative overflow-hidden
             ${active 
               ? 'bg-gradient-to-r ' + item.color + ' text-white shadow-colored-primary transform scale-105' 
-              : 'text-navy-600 hover:bg-white/20 hover:text-navy-800'
+              : 'text-slate-200 hover:bg-white/20 hover:text-white'
             }
           `}
         >
@@ -210,7 +210,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               : 'bg-transparent group-hover:bg-white/10'
             }
           `}>
-            <IconComponent className={`h-5 w-5 transition-all duration-300 ${active ? 'text-white' : 'text-navy-600 group-hover:text-navy-800'}`} />
+            <IconComponent className={`h-5 w-5 transition-all duration-300 ${active ? 'text-white' : 'text-slate-300 group-hover:text-white'}`} />
             
             {/* Badges */}
             {item.badge && (
@@ -225,7 +225,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           {/* Label and Description */}
           <div className="flex-1 text-left">
             <div className="flex items-center space-x-2">
-              <span className={`font-semibold transition-colors duration-300 ${active ? 'text-white' : 'text-navy-800'}`}>
+              <span className={`font-semibold transition-colors duration-300 ${active ? 'text-white' : 'text-slate-200'}`}>
                 {item.label}
               </span>
               
@@ -247,7 +247,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             
             {/* Description (visible on hover) */}
             <p className={`text-xs transition-all duration-300 ${
-              active ? 'text-white/80' : 'text-navy-500'
+              active ? 'text-white/80' : 'text-slate-300'
             } ${isHovered ? 'opacity-100 max-h-10' : 'opacity-0 max-h-0'} overflow-hidden`}>
               {item.description}
             </p>
@@ -268,8 +268,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     return (
       <div className="space-y-2">
         <div className="flex items-center space-x-2 px-4 py-2">
-          {IconComponent && <IconComponent className="h-4 w-4 text-navy-500" />}
-          <h3 className="text-xs font-bold text-navy-500 uppercase tracking-wider">
+          {IconComponent && <IconComponent className="h-4 w-4 text-slate-400" />}
+          <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
             {title}
           </h3>
         </div>

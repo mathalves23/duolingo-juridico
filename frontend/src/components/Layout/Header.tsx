@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { 
-  UserIcon, 
   TrophyIcon, 
   CurrencyDollarIcon,
-  FireIcon,
   Bars3Icon,
   BellIcon,
   ChevronDownIcon,
@@ -16,8 +14,6 @@ import {
   SunIcon,
   MoonIcon,
   CommandLineIcon,
-  HeartIcon,
-  StarIcon,
   BoltIcon,
   GiftIcon
 } from '@heroicons/react/24/outline';
@@ -103,19 +99,19 @@ const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
   };
 
   const userStats = {
-    xp: user?.profile?.xp_points || 2850,
-    coins: user?.profile?.coins || 540,
-    streak: user?.profile?.current_streak || 12,
+    xp: user?.profile?.xp_points || 10000,
+    coins: user?.profile?.coins || 9999,
+    streak: user?.profile?.current_streak || 100,
     hearts: 5,
-    level: Math.floor((user?.profile?.xp_points || 2850) / 1000) + 1
+    level: Math.floor((user?.profile?.xp_points || 10000) / 1000) + 1
   };
 
   return (
     <header className="header-glass sticky top-0 z-40 transition-all duration-300">
       <div className="px-4 sm:px-6 lg:px-8 py-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-6">
           {/* Left Section */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-6 min-w-0 flex-1">
             {/* Menu Toggle (Mobile) */}
             <button
               onClick={onMenuToggle}
@@ -125,7 +121,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
             </button>
 
             {/* Logo & Brand */}
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-3 shrink-0">
               <div className="relative">
                 <div className="w-10 h-10 bg-gradient-to-br from-legal-500 to-legal-600 rounded-2xl flex items-center justify-center shadow-colored-legal">
                   <CommandLineIcon className="h-6 w-6 text-white" />
@@ -140,21 +136,21 @@ const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
               </div>
             </div>
 
-            {/* Search Bar (Desktop) */}
-            <div className="hidden md:block relative">
+            {/* Search Bar (Desktop) - Com mais espaçamento */}
+            <div className="hidden xl:block flex-1 max-w-md ml-8">
               <div className="relative">
                 <input
                   type="text"
                   placeholder="Buscar questões, leis, jurisprudência..."
-                  className="input-glass w-80 pl-10 pr-4 py-2 text-sm"
+                  className="input-glass w-full pl-10 pr-4 py-2.5 text-sm"
                 />
                 <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
               </div>
             </div>
           </div>
 
-          {/* Center Section - User Stats */}
-          <div className="hidden lg:flex items-center space-x-6">
+          {/* Center Section - User Stats (Hidden on smaller screens) */}
+          <div className="hidden xl:flex items-center space-x-4 shrink-0">
             {/* XP */}
             <div className="flex items-center space-x-2 glass px-3 py-2 rounded-2xl">
               <TrophySolid className="h-5 w-5 text-gold-500" />
@@ -189,11 +185,11 @@ const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
           </div>
 
           {/* Right Section */}
-          <div className="flex items-center space-x-3">
-            {/* Search (Mobile) */}
+          <div className="flex items-center space-x-2 shrink-0">
+            {/* Search (Mobile/Tablet) */}
             <button
               onClick={() => setSearchOpen(!searchOpen)}
-              className="md:hidden p-2 rounded-2xl glass hover:bg-white/40 transition-all duration-200 hover:scale-105 focus-glass"
+              className="xl:hidden p-2 rounded-2xl glass hover:bg-white/40 transition-all duration-200 hover:scale-105 focus-glass"
             >
               <MagnifyingGlassIcon className="h-5 w-5 text-navy-700" />
             </button>
@@ -335,7 +331,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
 
         {/* Mobile Search Bar */}
         {searchOpen && (
-          <div className="mt-4 md:hidden animate-slide-down">
+          <div className="mt-4 xl:hidden animate-slide-down">
             <div className="relative">
               <input
                 type="text"
@@ -349,7 +345,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
         )}
 
         {/* Mobile Stats Bar */}
-        <div className="lg:hidden mt-4 flex items-center justify-between space-x-2">
+        <div className="xl:hidden mt-4 flex items-center justify-between space-x-2">
           <div className="flex items-center space-x-1 glass px-2 py-1 rounded-xl flex-1">
             <TrophySolid className="h-4 w-4 text-gold-500" />
             <span className="font-bold text-navy-800 text-sm">{userStats.xp.toLocaleString()}</span>

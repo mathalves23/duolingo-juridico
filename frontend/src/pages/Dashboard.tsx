@@ -2,38 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import {
   TrophyIcon,
-  FireIcon,
-  CurrencyDollarIcon,
-  ChartBarIcon,
   BookOpenIcon,
   QuestionMarkCircleIcon,
   ClockIcon,
   SparklesIcon,
-  StarIcon,
-  CalendarDaysIcon,
   AcademicCapIcon,
-  ArrowTrendingUpIcon,
-  BoltIcon,
   PlayIcon,
   EyeIcon,
-  RocketLaunchIcon,
-  LightBulbIcon,
   ShieldCheckIcon,
-  GiftIcon,
-  BeakerIcon,
   UserGroupIcon,
-  DocumentTextIcon,
-  ChevronRightIcon,
-  PlusIcon,
-  ArrowUpIcon,
-  CheckCircleIcon,
-  ExclamationTriangleIcon
+  DocumentTextIcon
 } from '@heroicons/react/24/outline';
 import {
   TrophyIcon as TrophySolid,
   FireIcon as FireSolid,
-  StarIcon as StarSolid,
-  HeartIcon as HeartSolid,
   BoltIcon as BoltSolid,
   CheckCircleIcon as CheckSolid
 } from '@heroicons/react/24/solid';
@@ -106,16 +88,16 @@ const Dashboard: React.FC = () => {
   // Mock data - em produção, viria da API
   useEffect(() => {
     const mockStats: DashboardStats = {
-      xp_points: user?.profile?.xp_points || 2850,
-      coins: user?.profile?.coins || 540,
-      current_streak: user?.profile?.current_streak || 12,
-      best_streak: user?.profile?.best_streak || 28,
+      xp_points: user?.profile?.xp_points || 10000,
+      coins: user?.profile?.coins || 9999,
+      current_streak: user?.profile?.current_streak || 100,
+      best_streak: user?.profile?.best_streak || 120,
       total_study_time: user?.profile?.total_study_time || 4320, // em minutos
       questions_answered: 287,
       correct_answers: 231,
       subjects_studied: 7,
       achievements_earned: 15,
-      level: Math.floor((user?.profile?.xp_points || 2850) / 1000) + 1,
+      level: Math.floor((user?.profile?.xp_points || 10000) / 1000) + 1,
       hearts: 5
     };
 
@@ -124,7 +106,7 @@ const Dashboard: React.FC = () => {
         id: 1,
         type: 'achievement',
         title: 'Mestre da Consistência! 🏆',
-        description: 'Manteve uma sequência de 12 dias consecutivos',
+        description: 'Manteve uma sequência de 100 dias consecutivos',
         timestamp: '2024-01-15T10:30:00Z',
         xp_earned: 150,
         icon: TrophySolid,
@@ -347,21 +329,21 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="space-y-8 animate-fade-in-up">
+    <div className="space-y-8 animate-fade-in-up pb-8">
       {/* Hero Section Ultra Moderno */}
-      <div className="relative overflow-hidden card-gradient rounded-3xl p-8 shadow-glass-xl border border-white/20">
+      <div className="relative overflow-hidden card-gradient rounded-3xl p-6 lg:p-8 shadow-glass-xl border border-white/20">
         {/* Background Decorations Avançadas */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-primary-400/20 via-purple-400/20 to-transparent rounded-full blur-3xl animate-float"></div>
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-gold-500/20 to-transparent rounded-full blur-2xl animate-blob"></div>
-        <div className="absolute top-1/2 left-1/3 w-32 h-32 bg-gradient-to-r from-legal-500/10 to-transparent rounded-full blur-xl animate-pulse"></div>
+        <div className="absolute top-0 right-0 w-64 lg:w-96 h-64 lg:h-96 bg-gradient-to-br from-primary-400/20 via-purple-400/20 to-transparent rounded-full blur-3xl animate-float"></div>
+        <div className="absolute bottom-0 left-0 w-48 lg:w-64 h-48 lg:h-64 bg-gradient-to-tr from-gold-500/20 to-transparent rounded-full blur-2xl animate-blob"></div>
+        <div className="absolute top-1/2 left-1/3 w-24 lg:w-32 h-24 lg:h-32 bg-gradient-to-r from-legal-500/10 to-transparent rounded-full blur-xl animate-pulse"></div>
         
         <div className="relative z-10">
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between space-y-6 lg:space-y-0">
-            <div className="flex-1">
-              <div className="flex items-center space-x-3 mb-4">
+            <div className="flex-1 min-w-0">
+              <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-3 mb-4">
                 <div className="flex items-center space-x-2">
-                  <SparklesIcon className="h-6 w-6 text-gold-500 animate-pulse" />
-                  <span className="text-gold-600 font-semibold text-sm">
+                  <SparklesIcon className="h-5 w-5 lg:h-6 lg:w-6 text-gold-500 animate-pulse" />
+                  <span className="text-gold-600 font-semibold text-xs lg:text-sm">
                     {getGreeting()}, futuro(a) aprovado(a)!
                   </span>
                 </div>
@@ -371,15 +353,15 @@ const Dashboard: React.FC = () => {
                   </span>
                 </div>
               </div>
-              <h1 className="text-4xl font-bold text-navy-800">
-                Olá, {user?.first_name || 'Estudante'}!
+              <h1 className="text-2xl lg:text-4xl font-bold text-navy-800 mb-2">
+                Olá, {user?.first_name || 'Administrador'}!
               </h1>
-              <p className="text-navy-600 mt-2 max-w-lg">
+              <p className="text-navy-600 text-sm lg:text-base max-w-lg">
                 {motivationalQuote}
               </p>
             </div>
             
-            <div className="flex items-center space-x-4">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 w-full lg:w-auto">
               <button className="btn-secondary-glass">
                 <EyeIcon className="h-5 w-5 mr-2" />
                 Revisar Questões
@@ -388,6 +370,225 @@ const Dashboard: React.FC = () => {
                 <PlayIcon className="h-5 w-5 mr-2" />
                 Continuar Estudos
               </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Stats Cards Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+        {/* XP Card */}
+        <div className="card card-hover group">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs lg:text-sm font-medium text-navy-600 mb-1">Experiência Total</p>
+              <p className="text-2xl lg:text-3xl font-bold text-navy-800">{stats?.xp_points.toLocaleString()}</p>
+              <p className="text-xs text-gold-600 mt-1">Nível {stats?.level}</p>
+            </div>
+            <div className="p-3 bg-gradient-to-r from-gold-500 to-gold-600 rounded-2xl shadow-colored-gold group-hover:scale-110 transition-transform duration-300">
+              <TrophySolid className="h-6 w-6 text-white" />
+            </div>
+          </div>
+          <div className="mt-4">
+            <div className="flex justify-between text-xs text-navy-600 mb-1">
+              <span>Próximo nível</span>
+              <span>{getNextLevelXP()} XP</span>
+            </div>
+            <div className="progress">
+              <div 
+                className="progress-bar progress-bar-gold" 
+                style={{ width: `${getLevelProgress()}%` }}
+              ></div>
+            </div>
+          </div>
+        </div>
+
+        {/* Streak Card */}
+        <div className="card card-hover group">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs lg:text-sm font-medium text-navy-600 mb-1">Sequência</p>
+              <p className="text-2xl lg:text-3xl font-bold text-navy-800">{stats?.current_streak}</p>
+              <p className="text-xs text-orange-600 mt-1">dias consecutivos</p>
+            </div>
+            <div className="p-3 bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl shadow-colored-orange group-hover:scale-110 transition-transform duration-300">
+              <FireSolid className="h-6 w-6 text-white animate-pulse" />
+            </div>
+          </div>
+          <div className="mt-4">
+            <p className="text-xs text-navy-600">Melhor sequência: <span className="font-semibold">{stats?.best_streak} dias</span></p>
+          </div>
+        </div>
+
+        {/* Accuracy Card */}
+        <div className="card card-hover group">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs lg:text-sm font-medium text-navy-600 mb-1">Precisão</p>
+              <p className="text-2xl lg:text-3xl font-bold text-navy-800">{getAccuracyPercentage()}%</p>
+              <p className="text-xs text-success-600 mt-1">{stats?.correct_answers}/{stats?.questions_answered} questões</p>
+            </div>
+            <div className="p-3 bg-gradient-to-r from-success-500 to-success-600 rounded-2xl shadow-colored-success group-hover:scale-110 transition-transform duration-300">
+              <CheckSolid className="h-6 w-6 text-white" />
+            </div>
+          </div>
+        </div>
+
+        {/* Study Time Card */}
+        <div className="card card-hover group">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs lg:text-sm font-medium text-navy-600 mb-1">Tempo de Estudo</p>
+              <p className="text-2xl lg:text-3xl font-bold text-navy-800">{formatTime(stats?.total_study_time || 0)}</p>
+              <p className="text-xs text-primary-600 mt-1">tempo total</p>
+            </div>
+            <div className="p-3 bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl shadow-colored-primary group-hover:scale-110 transition-transform duration-300">
+              <ClockIcon className="h-6 w-6 text-white" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+        {/* Left Column */}
+        <div className="lg:col-span-2 space-y-6 lg:space-y-8">
+          {/* Daily Goals */}
+          <div className="card">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-lg lg:text-xl font-bold text-navy-800">Metas Diárias</h2>
+              <span className="badge badge-primary">{dailyGoals.filter(goal => getProgressPercentage(goal.current, goal.target) === 100).length}/{dailyGoals.length} completas</span>
+            </div>
+            <div className="space-y-4">
+              {dailyGoals.map((goal) => {
+                const IconComponent = goal.icon;
+                const progress = getProgressPercentage(goal.current, goal.target);
+                const isCompleted = progress === 100;
+                
+                return (
+                  <div key={goal.id} className="flex items-center space-x-4">
+                    <div className={`p-2 rounded-xl bg-gradient-to-r ${goal.color} shadow-soft flex-shrink-0`}>
+                      <IconComponent className="h-5 w-5 text-white" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex justify-between items-center mb-1">
+                        <p className="font-medium text-navy-800 text-sm lg:text-base">{goal.type}</p>
+                        <div className="flex items-center space-x-2">
+                          {isCompleted && <CheckSolid className="h-4 w-4 text-success-500" />}
+                          <span className="text-sm font-semibold text-navy-600">
+                            {goal.current}/{goal.target} {goal.unit}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="progress">
+                        <div 
+                          className={`progress-bar ${isCompleted ? 'progress-bar-legal' : 'progress-bar'} transition-all duration-500`}
+                          style={{ width: `${progress}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Recent Activities */}
+          <div className="card">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-lg lg:text-xl font-bold text-navy-800">Atividades Recentes</h2>
+              <button className="text-primary-600 text-sm font-medium hover:text-primary-700 transition-colors">
+                Ver todas
+              </button>
+            </div>
+            <div className="space-y-4">
+              {recentActivities.map((activity) => {
+                const IconComponent = activity.icon;
+                return (
+                  <div key={activity.id} className="flex items-start space-x-4 p-3 rounded-2xl hover:bg-slate-50/50 transition-colors">
+                    <div className={`p-2 rounded-xl bg-gradient-to-r ${activity.color} shadow-soft flex-shrink-0`}>
+                      <IconComponent className="h-5 w-5 text-white" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-navy-800 text-sm lg:text-base">{activity.title}</p>
+                      <p className="text-xs lg:text-sm text-navy-600 mt-1">{activity.description}</p>
+                      <div className="flex items-center justify-between mt-2">
+                        <span className="text-xs text-navy-500">{getTimeAgo(activity.timestamp)}</span>
+                        {activity.xp_earned && (
+                          <span className="text-xs font-semibold text-gold-600 bg-gold-50/80 px-2 py-1 rounded-full">
+                            +{activity.xp_earned} XP
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column */}
+        <div className="space-y-6 lg:space-y-8">
+          {/* Week Streak */}
+          <div className="card">
+            <h3 className="text-lg font-bold text-navy-800 mb-4">Sequência da Semana</h3>
+            <div className="grid grid-cols-7 gap-2">
+              {studyStreak.map((day, index) => (
+                <div key={index} className="text-center">
+                  <p className="text-xs font-medium text-navy-600 mb-2">{day.day}</p>
+                  <div className={`w-8 h-8 mx-auto rounded-xl flex items-center justify-center ${
+                    day.completed 
+                      ? 'bg-gradient-to-r from-success-500 to-success-600 text-white' 
+                      : 'bg-slate-100 text-slate-400'
+                  }`}>
+                    {day.completed ? (
+                      <CheckSolid className="h-4 w-4" />
+                    ) : (
+                      <span className="text-xs">•</span>
+                    )}
+                  </div>
+                  {day.completed && (
+                    <p className="text-xs text-success-600 mt-1 font-medium">{day.xp}XP</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Subjects Progress */}
+          <div className="card">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-navy-800">Matérias</h3>
+              <button className="text-primary-600 text-sm font-medium hover:text-primary-700 transition-colors">
+                Ver todas
+              </button>
+            </div>
+            <div className="space-y-4">
+              {subjects.map((subject) => {
+                const IconComponent = subject.icon;
+                return (
+                  <div key={subject.id} className="p-3 rounded-2xl border border-slate-100/50 hover:bg-slate-50/50 transition-colors">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <div className={`p-2 rounded-xl bg-gradient-to-r ${subject.color} shadow-soft`}>
+                        <IconComponent className="h-4 w-4 text-white" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-navy-800 text-sm">{subject.name}</p>
+                        <p className="text-xs text-navy-600">{subject.completedLessons}/{subject.totalLessons} lições</p>
+                      </div>
+                      <span className="text-xs font-semibold text-navy-700">{subject.progress}%</span>
+                    </div>
+                    <div className="progress mb-2">
+                      <div 
+                        className="progress-bar transition-all duration-500"
+                        style={{ width: `${subject.progress}%` }}
+                      ></div>
+                    </div>
+                    <p className="text-xs text-navy-600">Próxima: {subject.nextLesson}</p>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
