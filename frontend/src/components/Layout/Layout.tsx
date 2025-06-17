@@ -45,7 +45,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
           {/* Main Content */}
           <main className="flex-1 overflow-y-auto">
-            <div className="container-main py-6 lg:py-8">
+            <div className="container-main py-8 lg:py-12 pt-12 lg:pt-16">
               {/* Content with Glass Effect */}
               <div className="relative">
                 {children}

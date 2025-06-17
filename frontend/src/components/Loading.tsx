@@ -110,7 +110,7 @@ const Loading: React.FC<LoadingProps> = ({
   };
 
   return (
-    <div className="flex flex-col items-center justify-center space-y-6 animate-fadeInUp">
+    <div className="flex flex-col items-center justify-center space-y-6 animate-fadeInUp min-h-screen pt-20">
       {/* Main Loading Animation */}
       <div className="relative">
         {/* Outer Ring */}
