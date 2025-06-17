@@ -293,14 +293,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       {/* Sidebar */}
       <aside
         className={`
-          fixed top-0 left-0 h-full w-80 sidebar-glass border-r border-white/10 z-50 transform transition-transform duration-300 ease-in-out
+          fixed top-0 left-0 h-screen w-80 sidebar-glass border-r border-white/10 z-50 transform transition-transform duration-300 ease-in-out
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-          lg:translate-x-0 lg:static lg:z-auto
+          lg:translate-x-0 lg:relative lg:z-auto lg:h-screen
         `}
       >
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="p-6 border-b border-white/10">
+          <div className="p-6 border-b border-white/10 shrink-0">
             <div className="flex items-center space-x-3">
               <div className="relative">
                 <div className="w-12 h-12 bg-gradient-to-br from-legal-500 to-legal-600 rounded-3xl flex items-center justify-center shadow-colored-legal">
@@ -318,7 +318,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           </div>
 
           {/* Navigation */}
-          <div className="flex-1 overflow-y-auto py-6 space-y-8">
+          <div className="flex-1 overflow-y-auto py-6 space-y-8 min-h-0">
             {/* Main Navigation */}
             {renderSection('Principal', mainNavItems, HomeIcon)}
 
@@ -333,7 +333,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           </div>
 
           {/* Footer */}
-          <div className="p-6 border-t border-white/10">
+          <div className="p-6 border-t border-white/10 shrink-0">
             {/* Quick Stats */}
             <div className="grid grid-cols-2 gap-3 mb-4">
               <div className="glass rounded-2xl p-3 text-center">
