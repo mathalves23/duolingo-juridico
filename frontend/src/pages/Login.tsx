@@ -9,14 +9,10 @@ import {
   UserIcon,
   LockClosedIcon,
   ArrowRightIcon,
-  CheckCircleIcon,
   ExclamationTriangleIcon
 } from '@heroicons/react/24/outline';
 import {
-  TrophyIcon as TrophySolid,
-  StarIcon as StarSolid,
-  FireIcon as FireSolid,
-  HeartIcon as HeartSolid
+  TrophyIcon as TrophySolid
 } from '@heroicons/react/24/solid';
 import Button from '../components/Button';
 import Loading from '../components/Loading';
@@ -106,14 +102,7 @@ const Login: React.FC = () => {
     }
   };
 
-  const getGreeting = () => {
-    const hour = currentTime.getHours();
-    if (hour < 12) return 'Bom dia';
-    if (hour < 18) return 'Boa tarde';
-    return 'Boa noite';
-  };
-
-  if (loading) {
+  if (loading.isLoading) {
     return <Loading type="legal" />;
   }
 
@@ -241,10 +230,10 @@ const Login: React.FC = () => {
                 fullWidth
                 variant="primary"
                 size="lg"
-                disabled={!isFormValid || loading}
+                disabled={!isFormValid || loading.isLoading}
                 icon={ArrowRightIcon}
               >
-                {loading ? 'Entrando...' : 'Entrar'}
+                {loading.isLoading ? 'Entrando...' : 'Entrar'}
               </Button>
             </div>
           </form>
@@ -262,65 +251,4 @@ const Login: React.FC = () => {
   );
 };
 
-const inputGlass = `
-  appearance-none rounded-lg relative block w-full px-3 py-3 bg-white/5 border border-gray-600 
-  placeholder-gray-500 text-white focus:outline-none focus:ring-primary-500 focus:border-primary-500 
-  focus:z-10 sm:text-sm transition-all duration-300
-`;
-
-const cardGlass = `
-  bg-white/10 backdrop-filter backdrop-blur-lg border border-white/20 rounded-3xl
-`;
-
-const shadowGlow = `
-  shadow-[0_0_20px_rgba(59,130,246,0.5)]
-`;
-
-const shadowGlowGold = `
-  shadow-[0_0_20px_rgba(252,211,77,0.5)]
-`;
-
-// Keyframes for animations
-const keyframes = `
-  @keyframes float {
-// ... existing code ...
-  }
-
-  .animate-slideInUp {
-    animation: slideInUp 0.8s ease-out backwards;
-  }
-  .input-glass {
-    appearance-none;
-    border-radius: 0.5rem;
-    position: relative;
-    display: block;
-    width: 100%;
-    padding: 0.75rem;
-    background-color: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgb(75 85 99);
-    color: white;
-    transition: all 0.3s;
-  }
-  .input-glass::placeholder {
-    color: rgb(156 163 175);
-  }
-  .input-glass:focus {
-    outline: none;
-    z-index: 10;
-    --tw-ring-color: rgb(59 130 246);
-    border-color: rgb(59 130 246);
-  }
-`;
-
-function LoginStyles() {
-  return <style>{keyframes}</style>;
-}
-
-export default function LoginPageWithStyles() {
-  return (
-    <>
-      <LoginStyles />
-      <Login />
-    </>
-  );
-} 
+export default Login; 

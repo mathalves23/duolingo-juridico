@@ -371,82 +371,26 @@ const Dashboard: React.FC = () => {
                   </span>
                 </div>
               </div>
-              
-              <h1 className="text-4xl lg:text-5xl font-bold mb-3 title-gradient">
-                Olá, {user?.first_name}! 👋
+              <h1 className="text-4xl font-bold text-navy-800">
+                Olá, {user?.first_name || 'Estudante'}!
               </h1>
-              
-              <p className="text-navy-600 text-lg lg:text-xl font-medium mb-4">
+              <p className="text-navy-600 mt-2 max-w-lg">
                 {motivationalQuote}
               </p>
-
-              {/* Level Progress */}
-              <div className="glass rounded-2xl p-4 mb-6 max-w-md">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-semibold text-navy-700">Nível {stats?.level}</span>
-                  <span className="text-xs text-navy-500">{getNextLevelXP()} XP para o próximo nível</span>
-                </div>
-                <div className="progress mb-2">
-                  <div 
-                    className="progress-bar transition-all duration-1000 ease-out"
-                    style={{ width: `${getLevelProgress()}%` }}
-                  ></div>
-                </div>
-                <div className="flex items-center justify-between text-xs text-navy-500">
-                  <span>{stats?.xp_points.toLocaleString()} XP</span>
-                  <span>{((stats?.level || 1) * 1000).toLocaleString()} XP</span>
-                </div>
-              </div>
-
-              {/* Quick Stats Inline */}
-              <div className="flex flex-wrap items-center gap-4">
-                <div className="flex items-center space-x-2 glass px-4 py-2 rounded-2xl hover-lift">
-                  <FireSolid className="h-5 w-5 text-orange-500 animate-pulse" />
-                  <span className="font-bold text-navy-800">{stats?.current_streak} dias</span>
-                  <span className="text-sm text-navy-500">sequência</span>
-                </div>
-                <div className="flex items-center space-x-2 glass px-4 py-2 rounded-2xl hover-lift">
-                  <TrophySolid className="h-5 w-5 text-gold-500" />
-                  <span className="font-bold text-navy-800">{stats?.xp_points.toLocaleString()}</span>
-                  <span className="text-sm text-navy-500">XP</span>
-                </div>
-                <div className="flex items-center space-x-2 glass px-4 py-2 rounded-2xl hover-lift">
-                  <ChartBarIcon className="h-5 w-5 text-legal-500" />
-                  <span className="font-bold text-navy-800">{getAccuracyPercentage()}%</span>
-                  <span className="text-sm text-navy-500">precisão</span>
-                </div>
-                <div className="flex items-center space-x-2 glass px-4 py-2 rounded-2xl hover-lift">
-                  <HeartSolid className="h-5 w-5 text-rose-500" />
-                  <span className="font-bold text-navy-800">{stats?.hearts}</span>
-                  <span className="text-sm text-navy-500">vidas</span>
-                </div>
-              </div>
             </div>
-
-            {/* Action Buttons */}
-            <div className="flex flex-col space-y-3">
-              <button className="btn btn-legal btn-lg group">
-                <PlayIcon className="h-5 w-5 mr-2 group-hover:animate-pulse" />
-                Continuar Estudando
-                <RocketLaunchIcon className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
+            
+            <div className="flex items-center space-x-4">
+              <button className="btn-secondary-glass">
+                <EyeIcon className="h-5 w-5 mr-2" />
+                Revisar Questões
               </button>
-              <button className="btn btn-outline">
-                <BeakerIcon className="h-5 w-5 mr-2" />
-                Laboratório IA
+              <button className="btn-primary-glow">
+                <PlayIcon className="h-5 w-5 mr-2" />
+                Continuar Estudos
               </button>
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Dashboard Content */}
-      <div className="text-center py-8">
-        <h2 className="text-2xl font-bold text-navy-800 mb-4">
-          Bem-vindo ao Duolingo Jurídico! 🎓
-        </h2>
-        <p className="text-navy-600">
-          Sua jornada de aprendizado jurídico começa aqui.
-        </p>
       </div>
     </div>
   );

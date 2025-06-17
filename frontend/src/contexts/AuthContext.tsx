@@ -30,7 +30,7 @@ const initialState: AuthState = {
   user: null,
   isAuthenticated: false,
   loading: {
-    isLoading: false,
+    isLoading: true,
     error: null,
   },
 };
@@ -109,37 +109,42 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const token = localStorage.getItem('access_token');
     
     if (!token) {
-      // Se não há token, não faz login automaticamente
+      // Se não há token, finaliza o carregamento e desloga
+      dispatch({ type: 'SET_LOADING', payload: { isLoading: false } });
       dispatch({ type: 'LOGOUT' });
       return;
     }
 
-    dispatch({ type: 'SET_LOADING', payload: { isLoading: true } });
-
+    // Se existe token, reconstroi o usuário com dados mock
     try {
-      // Para modo demo/desenvolvimento, use dados mock
+      const storedUsername = localStorage.getItem('user_username') || 'demo';
+      const storedFirstName = localStorage.getItem('user_first_name') || 'Estudante';
+      const storedLastName = localStorage.getItem('user_last_name') || 'Demo';
+      const storedEmail = localStorage.getItem('user_email') || 'demo@duolingojuridico.com';
+      const isAdmin = localStorage.getItem('user_role') === 'admin';
+      
       const mockUser: User = {
         id: 1,
-        username: 'demo',
-        email: 'demo@duolingojuridico.com',
-        first_name: 'Estudante',
-        last_name: 'Demo',
+        username: storedUsername,
+        email: storedEmail,
+        first_name: storedFirstName,
+        last_name: storedLastName,
         is_verified: true,
         created_at: new Date().toISOString(),
         profile: {
           id: 1,
-          bio: 'Estudante de Direito determinado!',
+          bio: isAdmin ? 'Administrador do Sistema' : 'Estudante de Direito determinado!',
           date_of_birth: null,
           phone_number: '',
           preferred_study_time: 'evening',
           target_exam: 'OAB',
-          experience_level: 'intermediate',
-          study_goals: 'Passar na OAB',
-          xp_points: 2850,
-          coins: 450,
-          current_streak: 12,
-          best_streak: 15,
-          total_study_time: 1440,
+          experience_level: isAdmin ? 'advanced' : 'intermediate',
+          study_goals: isAdmin ? 'Gerenciar a plataforma' : 'Passar na OAB',
+          xp_points: isAdmin ? 10000 : 2850,
+          coins: isAdmin ? 9999 : 450,
+          current_streak: isAdmin ? 100 : 12,
+          best_streak: isAdmin ? 150 : 15,
+          total_study_time: isAdmin ? 10000 : 1440,
           avatar: null,
         }
       };
@@ -150,6 +155,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       dispatch({ type: 'LOGOUT' });
       localStorage.removeItem('access_token');
       localStorage.removeItem('refresh_token');
+      localStorage.removeItem('user_username');
+      localStorage.removeItem('user_first_name');
+      localStorage.removeItem('user_last_name');
+      localStorage.removeItem('user_email');
+      localStorage.removeItem('user_role');
     }
   };
 
@@ -157,38 +167,46 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     dispatch({ type: 'SET_LOADING', payload: { isLoading: true } });
 
     try {
-      // Modo demo - aceita qualquer usuário/senha
+      // Modo demo - aceita qualquer usuário/senha, com verificação especial para admin
       if (credentials.username && credentials.password) {
+        // Verificar se são credenciais de admin
+        const isAdmin = credentials.username === 'admin' && credentials.password === 'admin123';
+        
         // Simular dados de resposta
         const mockUser: User = {
-          id: 1,
+          id: isAdmin ? 999 : 1,
           username: credentials.username,
-          email: 'demo@duolingojuridico.com',
-          first_name: 'Estudante',
-          last_name: 'Demo',
+          email: isAdmin ? 'admin@duolingojuridico.com' : 'demo@duolingojuridico.com',
+          first_name: isAdmin ? 'Administrador' : 'Estudante',
+          last_name: isAdmin ? 'Sistema' : 'Demo',
           is_verified: true,
           created_at: new Date().toISOString(),
           profile: {
             id: 1,
-            bio: 'Estudante de Direito determinado!',
+            bio: isAdmin ? 'Administrador do Sistema' : 'Estudante de Direito determinado!',
             date_of_birth: null,
             phone_number: '',
             preferred_study_time: 'evening',
             target_exam: 'OAB',
-            experience_level: 'intermediate',
-            study_goals: 'Passar na OAB',
-            xp_points: 2850,
-            coins: 450,
-            current_streak: 12,
-            best_streak: 15,
-            total_study_time: 1440,
+            experience_level: isAdmin ? 'advanced' : 'intermediate',
+            study_goals: isAdmin ? 'Gerenciar a plataforma' : 'Passar na OAB',
+            xp_points: isAdmin ? 10000 : 2850,
+            coins: isAdmin ? 9999 : 450,
+            current_streak: isAdmin ? 100 : 12,
+            best_streak: isAdmin ? 150 : 15,
+            total_study_time: isAdmin ? 10000 : 1440,
             avatar: null,
           }
         };
         
-        // Salvar token demo no localStorage
+        // Salvar dados no localStorage para persistência
         localStorage.setItem('access_token', 'demo_token_' + Date.now());
         localStorage.setItem('refresh_token', 'demo_refresh_' + Date.now());
+        localStorage.setItem('user_username', mockUser.username);
+        localStorage.setItem('user_first_name', mockUser.first_name);
+        localStorage.setItem('user_last_name', mockUser.last_name);
+        localStorage.setItem('user_email', mockUser.email);
+        localStorage.setItem('user_role', isAdmin ? 'admin' : 'user');
         
         dispatch({ type: 'LOGIN_SUCCESS', payload: mockUser });
       } else {
@@ -205,18 +223,50 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     dispatch({ type: 'SET_LOADING', payload: { isLoading: true } });
 
     try {
-      const response: AuthResponse = await apiService.register(userData);
-      
-      // Salvar tokens no localStorage
-      localStorage.setItem('access_token', response.tokens.access);
-      localStorage.setItem('refresh_token', response.tokens.refresh);
-      
-      dispatch({ type: 'LOGIN_SUCCESS', payload: response.user });
+      // Modo demo - criar conta com dados fornecidos
+      if (userData.username && userData.email && userData.password && userData.first_name && userData.last_name) {
+        // Simular dados de resposta
+        const mockUser: User = {
+          id: Math.floor(Math.random() * 1000) + 1,
+          username: userData.username,
+          email: userData.email,
+          first_name: userData.first_name,
+          last_name: userData.last_name,
+          is_verified: false,
+          created_at: new Date().toISOString(),
+          profile: {
+            id: 1,
+            bio: `Estudante de Direito - ${userData.first_name} ${userData.last_name}`,
+            date_of_birth: null,
+            phone_number: '',
+            preferred_study_time: 'evening',
+            target_exam: 'OAB',
+            experience_level: 'beginner',
+            study_goals: 'Passar na OAB',
+            xp_points: 0,
+            coins: 100,
+            current_streak: 0,
+            best_streak: 0,
+            total_study_time: 0,
+            avatar: null,
+          }
+        };
+        
+        // Salvar token demo no localStorage
+        localStorage.setItem('access_token', 'demo_token_' + Date.now());
+        localStorage.setItem('refresh_token', 'demo_refresh_' + Date.now());
+        localStorage.setItem('user_username', mockUser.username);
+        localStorage.setItem('user_first_name', mockUser.first_name);
+        localStorage.setItem('user_last_name', mockUser.last_name);
+        localStorage.setItem('user_email', mockUser.email);
+        localStorage.setItem('user_role', 'user');
+        
+        dispatch({ type: 'LOGIN_SUCCESS', payload: mockUser });
+      } else {
+        throw new Error('Todos os campos são obrigatórios');
+      }
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 
-                          error.response?.data?.detail ||
-                          error.response?.data?.non_field_errors?.[0] ||
-                          'Erro ao criar conta. Tente novamente.';
+      const errorMessage = error.message || 'Erro ao criar conta. Tente novamente.';
       dispatch({ type: 'SET_ERROR', payload: errorMessage });
       throw error;
     }
@@ -226,13 +276,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     dispatch({ type: 'SET_LOADING', payload: { isLoading: true } });
 
     try {
-      await apiService.logout();
+      // Em produção, chamar a API de logout aqui
+      // await apiService.logout();
     } catch (error) {
       console.error('Erro ao fazer logout:', error);
     } finally {
       dispatch({ type: 'LOGOUT' });
       localStorage.removeItem('access_token');
       localStorage.removeItem('refresh_token');
+      localStorage.removeItem('user_username');
+      localStorage.removeItem('user_first_name');
+      localStorage.removeItem('user_last_name');
+      localStorage.removeItem('user_email');
+      localStorage.removeItem('user_role');
     }
   };
 
