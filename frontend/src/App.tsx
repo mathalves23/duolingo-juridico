@@ -17,12 +17,13 @@ import Settings from './pages/Settings';
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
 
+  // Reduce o tempo de loading para evitar loops infinitos
   if (loading.isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Carregando...</p>
+          <p className="mt-4 text-gray-600">Verificando autenticação...</p>
         </div>
       </div>
     );
@@ -35,18 +36,13 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
 
-  if (loading.isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Carregando...</p>
-        </div>
-      </div>
-    );
+  // Para rotas públicas como login, sempre mostra o componente
+  // Só redireciona se já estiver autenticado E não estiver carregando
+  if (isAuthenticated && !loading.isLoading) {
+    return <Navigate to="/" replace />;
   }
 
-  return !isAuthenticated ? <>{children}</> : <Navigate to="/" replace />;
+  return <>{children}</>;
 };
 
 // Componente principal da aplicação

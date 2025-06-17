@@ -109,6 +109,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const token = localStorage.getItem('access_token');
     
     if (!token) {
+      // Se não há token, não faz login automaticamente
       dispatch({ type: 'LOGOUT' });
       return;
     }
