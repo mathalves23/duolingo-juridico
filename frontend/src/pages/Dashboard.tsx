@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useNotification } from '../contexts/NotificationContext';
 import {
   TrophyIcon,
   BookOpenIcon,
@@ -76,6 +77,7 @@ interface Subject {
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
+  const { success, info, warning } = useNotification();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [recentActivities, setRecentActivities] = useState<RecentActivity[]>([]);
   const [dailyGoals, setDailyGoals] = useState<DailyGoal[]>([]);
@@ -264,7 +266,46 @@ const Dashboard: React.FC = () => {
     setSubjects(mockSubjects);
     setMotivationalQuote(quotes[Math.floor(Math.random() * quotes.length)]);
     setLoading(false);
-  }, [user]);
+
+    // Mostrar notificações baseadas no progresso do usuário
+    setTimeout(() => {
+      if (mockStats.current_streak >= 100) {
+        success(
+          'Sequência Épica! 🔥',
+          `Incrível! Você mantém uma sequência de ${mockStats.current_streak} dias!`,
+          [
+            {
+              label: 'Ver Conquistas',
+              action: () => window.location.href = '/achievements',
+              style: 'primary'
+            }
+          ]
+        );
+      } else if (mockStats.current_streak >= 30) {
+        info(
+          'Sequência Impressionante! ⚡',
+          `Você está com ${mockStats.current_streak} dias consecutivos de estudo!`
+        );
+      }
+
+      // Verificar metas diárias
+      const questionsGoal = mockDailyGoals.find(g => g.id === 'questions');
+      if (questionsGoal && questionsGoal.current < questionsGoal.target) {
+        const remaining = questionsGoal.target - questionsGoal.current;
+        info(
+          'Meta Diária 🎯',
+          `Faltam apenas ${remaining} questões para completar sua meta de hoje!`,
+          [
+            {
+              label: 'Continuar Estudando',
+              action: () => window.location.href = '/questions',
+              style: 'primary'
+            }
+          ]
+        );
+      }
+         }, 2000);
+  }, [user, success, info]);
 
   // Atualizar horário em tempo real
   useEffect(() => {

@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { NotificationProvider } from './contexts/NotificationContext';
 import Layout from './components/Layout/Layout';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
@@ -13,6 +14,9 @@ import Store from './pages/Store';
 import Quizzes from './pages/Quizzes';
 import Analytics from './pages/Analytics';
 import Settings from './pages/Settings';
+import AIAssistant from './pages/AIAssistant';
+import AdminPanel from './pages/AdminPanel';
+import Gamification from './pages/Gamification';
 
 // Componente para rotas protegidas
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -165,10 +169,7 @@ const AppContent: React.FC = () => {
           element={
             <ProtectedRoute>
               <Layout>
-                <div className="text-center py-12">
-                  <h2 className="text-2xl font-bold text-gray-900">IA Assistente</h2>
-                  <p className="text-gray-600 mt-2">Em desenvolvimento...</p>
-                </div>
+                <AIAssistant />
               </Layout>
             </ProtectedRoute>
           }
@@ -180,6 +181,28 @@ const AppContent: React.FC = () => {
             <ProtectedRoute>
               <Layout>
                 <Settings />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <AdminPanel />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/gamification"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Gamification />
               </Layout>
             </ProtectedRoute>
           }
@@ -212,7 +235,9 @@ const AppContent: React.FC = () => {
 const App: React.FC = () => {
   return (
     <AuthProvider>
-      <AppContent />
+      <NotificationProvider>
+        <AppContent />
+      </NotificationProvider>
     </AuthProvider>
   );
 };
