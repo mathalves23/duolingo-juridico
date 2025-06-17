@@ -1,13 +1,7 @@
 [build]
   base = "frontend"
-  publish = "build"
+  publish = "frontend/build"
   command = "npm run build"
-
-[build.environment]
-  NODE_VERSION = "18"
-  CI = "false"
-  REACT_APP_API_URL = "https://concurseiro-backend.onrender.com/api/v1"
-  REACT_APP_APP_NAME = "Duolingo Jurídico"
 
 [[redirects]]
   from = "/*"
