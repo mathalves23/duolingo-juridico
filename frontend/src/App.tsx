@@ -17,6 +17,10 @@ import Settings from './pages/Settings';
 import AIAssistant from './pages/AIAssistant';
 import AdminPanel from './pages/AdminPanel';
 import Gamification from './pages/Gamification';
+import StudyPlan from './pages/StudyPlan';
+import ExamSimulator from './pages/ExamSimulator';
+import Library from './pages/Library';
+import Mentorship from './pages/Mentorship';
 
 // Componente para rotas protegidas
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -203,6 +207,50 @@ const AppContent: React.FC = () => {
             <ProtectedRoute>
               <Layout>
                 <Gamification />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/study-plan"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <StudyPlan />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/exam-simulator"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <ExamSimulator />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/library"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Library />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/mentorship"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Mentorship />
               </Layout>
             </ProtectedRoute>
           }

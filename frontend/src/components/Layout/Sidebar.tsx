@@ -20,7 +20,10 @@ import {
   GiftIcon,
   BoltIcon,
   HeartIcon,
-  ShieldCheckIcon
+  ShieldCheckIcon,
+  CalendarDaysIcon,
+  PlayIcon,
+  BuildingLibraryIcon
 } from '@heroicons/react/24/outline';
 import {
   HomeIcon as HomeSolid,
@@ -126,6 +129,61 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       iconSolid: ChartSolid,
       color: 'from-indigo-500 to-indigo-600',
       description: 'Análise detalhada do desempenho'
+    }
+  ];
+
+  const studyNavItems: NavItem[] = [
+    {
+      id: 'study-plan',
+      label: 'Plano de Estudos',
+      path: '/study-plan',
+      icon: CalendarDaysIcon,
+      iconSolid: CalendarDaysIcon,
+      color: 'from-blue-500 to-blue-600',
+      description: 'Cronograma personalizado com IA',
+      isNew: true
+    },
+    {
+      id: 'exam-simulator',
+      label: 'Simulador',
+      path: '/exam-simulator',
+      icon: PlayIcon,
+      iconSolid: PlayIcon,
+      color: 'from-green-500 to-green-600',
+      description: 'Simulados realistas de exames',
+      isNew: true
+    },
+    {
+      id: 'gamification',
+      label: 'Gamificação',
+      path: '/gamification',
+      icon: TrophyIcon,
+      iconSolid: TrophySolid,
+      color: 'from-yellow-500 to-yellow-600',
+      description: 'Sistema de conquistas e níveis'
+    }
+  ];
+
+  const resourcesNavItems: NavItem[] = [
+    {
+      id: 'library',
+      label: 'Biblioteca',
+      path: '/library',
+      icon: BuildingLibraryIcon,
+      iconSolid: BuildingLibraryIcon,
+      color: 'from-indigo-500 to-indigo-600',
+      description: 'Acesso à legislação e doutrina',
+      isNew: true
+    },
+    {
+      id: 'mentorship',
+      label: 'Mentoria',
+      path: '/mentorship',
+      icon: UserGroupIcon,
+      iconSolid: UserGroupIcon,
+      color: 'from-pink-500 to-pink-600',
+      description: 'Conecte-se com profissionais',
+      isNew: true
     }
   ];
 
@@ -321,6 +379,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           <div className="flex-1 overflow-y-auto py-6 space-y-8 min-h-0">
             {/* Main Navigation */}
             {renderSection('Principal', mainNavItems, HomeIcon)}
+
+            {/* Study Tools */}
+            {renderSection('Ferramentas de Estudo', studyNavItems, BookOpenIcon)}
+
+            {/* Resources */}
+            {renderSection('Recursos', resourcesNavItems, BuildingLibraryIcon)}
 
             {/* Progress & Stats */}
             {renderSection('Progresso', progressNavItems, TrophyIcon)}
