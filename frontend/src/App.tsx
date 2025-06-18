@@ -21,6 +21,7 @@ import StudyPlan from './pages/StudyPlan';
 import ExamSimulator from './pages/ExamSimulator';
 import Library from './pages/Library';
 import Mentorship from './pages/Mentorship';
+import ContentManager from './pages/ContentManager';
 
 // Componente para rotas protegidas
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -251,6 +252,17 @@ const AppContent: React.FC = () => {
             <ProtectedRoute>
               <Layout>
                 <Mentorship />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/content-manager"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <ContentManager />
               </Layout>
             </ProtectedRoute>
           }

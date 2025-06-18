@@ -29,11 +29,17 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "PORT=3030 react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "build:prod": "CI=false react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "populate-db": "node -e \"console.log('🚀 Executando população do banco de dados...'); require('./src/scripts/populateDatabase.ts').populateDatabase().then(() => console.log('✅ Concluído!')).catch(console.error)\"",
+    "populate-subject": "node -e \"const subject = process.argv[2] || 'Direito Civil'; const count = process.argv[3] || 500; require('./src/scripts/populateDatabase.ts').populateSubjectContent(subject, count).then(() => console.log('✅ Concluído!')).catch(console.error)\"",
+    "clear-db": "node -e \"console.log('🗑️ Limpando banco de dados...'); require('./src/scripts/populateDatabase.ts').clearDatabase().then(() => console.log('✅ Banco limpo!')).catch(console.error)\"",
+    "backup-db": "node -e \"console.log('💾 Criando backup...'); require('./src/scripts/populateDatabase.ts').backupDatabase().then(() => console.log('✅ Backup criado!')).catch(console.error)\"",
+    "generate-content": "node -e \"console.log('📝 Gerando conteúdo...'); const { generateAllContent } = require('./src/data/contentGenerator.ts'); const content = generateAllContent(); console.log('✅ Gerado:', content)\"",
+    "content-stats": "node -e \"const { getContentStatistics } = require('./src/data/massiveContent.ts'); console.log('📊 Estatísticas:', getContentStatistics())\""
   },
   "eslintConfig": {
     "extends": [
